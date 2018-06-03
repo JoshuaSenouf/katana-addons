@@ -12,7 +12,7 @@ The instance array is what is backing up Pixar USD's PointInstancer inside Katan
 Screenshots
 ------
 
-* Options of the node
+* Options of the node:
 
 ![](https://image.ibb.co/hV88sd/Prman_Instance_Array_Options.png)
 
@@ -21,14 +21,14 @@ Features
 
 * General:
     * Loading as many (animated) Alembic geometry files as necessary to use as instance sources
-    * Load an Alembic pointcloud to use to scatter the instance sources
+    * Load an (animated) Alembic pointcloud to use to scatter the instance sources
     * Being able to compute the instance array either immediately or during op resolve, in order to bring the expansion time as close to zero as possible
 
 * Scatter:
     * Density control
     * **TODO:** Per-instance animation offset
 
-* Primvars (The default names comes from Maya/USD naming conventions):
+* Primvars (The default names come from Maya/USD naming conventions):
     * Ability to override the default name of each supported primvars
     * Supported:
         * Position ("P")
