@@ -1,0 +1,8 @@
+# Folders
+
+build/*
+.vscode/*
+
+# Files
+
+CMakeLists.txt.user
