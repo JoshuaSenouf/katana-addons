@@ -25,6 +25,7 @@ Features
     * Being able to compute the instance array either immediately or during op resolve, in order to bring the expansion time as close to zero as possible
 
 * Scatter:
+    * Preview of the position of each instance as a Katana pointcloud in the Viewer
     * Density control
     * **TODO:** Per-instance animation offset
 

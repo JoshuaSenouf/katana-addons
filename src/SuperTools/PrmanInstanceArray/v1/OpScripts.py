@@ -30,7 +30,11 @@ end
 
 def previewPointCloudSetupScript():
     return """
-Interface.SetAttr("type", StringAttribute("pointcloud"))
+local childName = Interface.GetOpArg("user.previewPointCloudName"):getValue()
+local sscb = OpArgsBuilders.StaticSceneCreate(false)
+
+sscb:createEmptyLocation(childName, "pointcloud")
+Interface.ExecOp("StaticSceneCreate", sscb:build())
 """
 
 def deleteInstanceArrayChildrenScript():

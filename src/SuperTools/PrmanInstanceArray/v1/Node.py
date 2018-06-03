@@ -173,10 +173,14 @@ class PrmanInstanceArrayNode(NodegraphAPI.SuperTool):
         previewPointCloudSetup_Node = NodegraphAPI.CreateNode("OpScript", self)
         previewPointCloudSetup_Node.setName("OpScript_PreviewPointCloudSetup")
 
-        if self.getParameterValue("abcScatterPath", 1):
-            previewPointCloudSetup_Node.getParameter("CEL").setExpression("\"" + self.abcScatterScenegraphLocation + "\"\
-            + \"/\"\"" + self.abcScatterScenegraphLocation.rsplit("/", 1)[1] + "_previewCloud\"", True)
+        previewPointCloudSetup_Node.getParameter("CEL").setExpression("\"" + self.abcScatterScenegraphLocation + "\"", True)
         previewPointCloudSetup_Node.getParameter("script.lua").setValue(OS.previewPointCloudSetupScript(), 1)
+
+        previewPointCloudSetup_UserGroup = previewPointCloudSetup_Node.getParameters().createChildGroup("user")
+        previewPointCloudSetup_UserGroup.createChildString("previewPointCloudName", "")
+        if self.getParameterValue("abcScatterPath", 1):
+            previewPointCloudSetup_Node.getParameter("user.previewPointCloudName").setExpression("\"" +
+            self.abcScatterScenegraphLocation.rsplit("/", 1)[1] + "_previewCloud\"", True)
 
         previewPointCloudSetup_Node.getParameter("applyWhen").setValue("immediate", 1)
         previewPointCloudSetup_Node.getParameter("applyWhere").setValue("at locations matching CEL", 1)
