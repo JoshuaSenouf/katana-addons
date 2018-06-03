@@ -20,9 +20,9 @@ Features
 ------
 
 * General:
-    * Loading as many (animated) Alembic geometry files as necessary to be used as instance sources
-    * Load an Alembic pointcloud to be used to scatter the instance sources
-    * Being able to compute the instance array either immediately or during op resolve, in order to bring the expansion as close to zero as possible
+    * Loading as many (animated) Alembic geometry files as necessary to use as instance sources
+    * Load an Alembic pointcloud to use to scatter the instance sources
+    * Being able to compute the instance array either immediately or during op resolve, in order to bring the expansion time as close to zero as possible
 
 * Scatter:
     * Density control
@@ -50,5 +50,7 @@ How to use
 ------
 
 In order to work with this tool, the geometry format must be Alembic (.abc).
+
 The user will need at least one Alembic file to instanciate, as well as an Alembic pointcloud that will represent the scatter.
+
 This pointcloud will need to contain at least a position attribute (which should be located in most cases under "geometry.point.P" in Katana anyway), as well as a indices/indexes primvar that will allow to map each instance with its corresponding instance source.
