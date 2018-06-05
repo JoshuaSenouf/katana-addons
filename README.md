@@ -4,7 +4,7 @@ JSKatana
 Tools
 -----
 
-* [PrmanInstanceArray](https://github.com/JoshuaSenouf/JSKatana/tree/master/src/SuperTools/PrmanInstanceArray)
+* [PrmanInstanceArray](https://gitlab.com/JoshuaSenouf/JSKatana/tree/master/src/SuperTools/PrmanInstanceArray)
 
 How to use
 ------
