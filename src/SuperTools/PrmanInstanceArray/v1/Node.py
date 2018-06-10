@@ -34,7 +34,7 @@ class PrmanInstanceArrayNode(NodegraphAPI.SuperTool):
         self.getParameters().createChildString("angularVelocityPrimvar", "angularVelocity")
 
         self.getParameters().createChildNumber("useMotionBlur", 0)
-        self.getParameters().createChildNumber("velocityMultiplier", 1)
+        self.getParameters().createChildNumber("intensityMultiplier", 1)
 
         self.__buildDefaultNetwork()
 
@@ -44,7 +44,7 @@ class PrmanInstanceArrayNode(NodegraphAPI.SuperTool):
 
         mergeInputs_Node = self.mergeInputsNode()
         abcScatter_Node = self.abcScatterNode()
-        abcGeometryGroupMerge_Node = self.abcGeometryGroupMergeNode()
+        createABCSources_Node = self.createABCSourcesNode()
         setInstanceSourceType_Node = self.setInstanceSourceTypeNode()
         instanceArraySetup_Node = self.instanceArraySetupNode()
         previewPointCloudSetup_Node = self.previewPointCloudSetupNode()
@@ -52,13 +52,10 @@ class PrmanInstanceArrayNode(NodegraphAPI.SuperTool):
         scatterDensityControl_Node = self.scatterDensityControlNode()
         deleteInstanceArrayChildren_Node = self.deleteInstanceArrayChildrenNode()
 
-        mergeInputs_Node.addInputPort("inputScene")
-        mergeInputs_Node.addInputPort("inputGeometry")
-        mergeInputs_Node.addInputPort("inputScatter")
         self.getSendPort(self.getInputPortByIndex(0).getName()).connect(mergeInputs_Node.getInputPort("inputScene"))
 
         abcScatter_Node.getOutputPortByIndex(0).connect(mergeInputs_Node.getInputPort("inputScatter"))
-        abcGeometryGroupMerge_Node.getOutputPortByIndex(0).connect(mergeInputs_Node.getInputPort("inputGeometry"))
+        createABCSources_Node.getOutputPortByIndex(0).connect(mergeInputs_Node.getInputPort("inputGeometry"))
         mergeInputs_Node.getOutputPortByIndex(0).connect(setInstanceSourceType_Node.getInputPortByIndex(0))
         setInstanceSourceType_Node.getOutputPortByIndex(0).connect(instanceArraySetup_Node.getInputPortByIndex(0))
         instanceArraySetup_Node.getOutputPortByIndex(0).connect(previewPointCloudSetup_Node.getInputPortByIndex(0))
@@ -68,7 +65,7 @@ class PrmanInstanceArrayNode(NodegraphAPI.SuperTool):
 
         SA.FnLayoutInputNodes(mergeInputs_Node)
         SA.FnLayoutInputNodes(abcScatter_Node)
-        SA.FnLayoutInputNodes(abcGeometryGroupMerge_Node)
+        SA.FnLayoutInputNodes(createABCSources_Node)
         SA.FnLayoutInputNodes(setInstanceSourceType_Node)
         SA.FnLayoutInputNodes(instanceArraySetup_Node)
         SA.FnLayoutInputNodes(previewPointCloudSetup_Node)
@@ -86,6 +83,10 @@ class PrmanInstanceArrayNode(NodegraphAPI.SuperTool):
         mergeInputs_Node = NodegraphAPI.CreateNode("Merge", self)
         mergeInputs_Node.setName("Merge_Inputs")
 
+        mergeInputs_Node.addInputPort("inputScene")
+        mergeInputs_Node.addInputPort("inputGeometry")
+        mergeInputs_Node.addInputPort("inputScatter")
+
         SA.FnAddNodeReferenceParam(self, "node_Merge_Inputs", mergeInputs_Node)
 
         return mergeInputs_Node
@@ -95,8 +96,8 @@ class PrmanInstanceArrayNode(NodegraphAPI.SuperTool):
         abcScatter_Node.setName("AlembicIn_LoadScatter")
 
         if self.getParameterValue("abcScatterPath", 1):
-            abcScatter_Node.getParameter("name").setExpression("getParent().instanceArrayLoc\
-                + \"/\"\"" + self.getParameterValue("abcScatterPath", 1).rsplit("/", 1)[1].split(".abc", 1)[0] + "\"")
+            abcScatter_Node.getParameter("name").setExpression(("getParent().instanceArrayLoc "
+                "+ \"/\"\"" + self.getParameterValue("abcScatterPath", 1).rsplit("/", 1)[1].split(".abc", 1)[0] + "\""), True)
             abcScatter_Node.getParameter("abcAsset").setExpression("getParent().abcScatterPath")
 
             # Very dirty way to get to the pointcloud location of the Alembic file.
@@ -112,20 +113,34 @@ class PrmanInstanceArrayNode(NodegraphAPI.SuperTool):
 
         return abcScatter_Node
 
-    def abcGeometryGroupMergeNode(self):
-        abcGeometryGroupMerge_Node = NodegraphAPI.CreateNode("GroupMerge", self)
-        abcGeometryGroupMerge_Node.setName("GroupMerge_LoadAlembicGeometry")
-        abcGeometryGroupMerge_Node.setChildNodeType("Alembic_In")
+    def createABCSourcesNode(self):
+        createABCSources_Node = NodegraphAPI.CreateNode("OpScript", self)
+        createABCSources_Node.setName("OpScript_CreateABCSources")
 
-        for idx in xrange(0, len(self.abcGeoPathsList)):
-            abcGeoNode = abcGeometryGroupMerge_Node.buildChildNode()
-            abcGeoNode.getParameter("name").setExpression("getParent().getParent().instanceSourcesLoc\
-                + \"/\"\"" + self.abcGeoPathsList[idx].rsplit("/", 1)[1].split(".abc", 1)[0] + "\"", 1)
-            abcGeoNode.getParameter("abcAsset").setExpression("\"" + self.abcGeoPathsList[idx] + "\"")
+        createABCSources_Node.getParameter("location").setExpression("getParent().instanceSourcesLoc", True)
+        createABCSources_Node.getParameter("script.lua").setValue(OS.createABCSourcesScript(), 1)
 
-        SA.FnAddNodeReferenceParam(self, "node_GroupMerge_LoadAlembicGeometry", abcGeometryGroupMerge_Node)
+        createABCSources_UserGroup = createABCSources_Node.getParameters().createChildGroup("user")
 
-        return abcGeometryGroupMerge_Node
+        instanceSourcesNamesAttr = createABCSources_UserGroup.createChildStringArray("instanceSourcesNames", len(self.abcGeoPathsList))
+        instanceSourcesNamesList = ["\"" + self.abcGeoPathsList[idx].rsplit("/", 1)[1].split(".abc", 1)[0] + "\""
+            for idx in xrange(0, len(self.abcGeoPathsList))] if self.abcGeoPathsList else []
+
+        for nameIdx in range(len(instanceSourcesNamesList)):
+            instanceSourcesNamesAttr.getChildByIndex(nameIdx).setExpression(instanceSourcesNamesList[nameIdx])
+
+        abcGeoPathsListAttr = createABCSources_UserGroup.createChildStringArray("abcGeoPaths", len(self.abcGeoPathsList))
+
+        for fileIdx in range(len(self.abcGeoPathsList)):
+            abcGeoPathsListAttr.getChildByIndex(fileIdx).setExpression("\"" + self.abcGeoPathsList[fileIdx] + "\"", True)
+
+        createABCSources_Node.getParameter("applyWhen").setValue("immediate", 1)
+        createABCSources_Node.getParameter("applyWhere").setValue("at specific location", 1)
+        createABCSources_Node.getParameter("inputBehavior").setValue("only valid", 1)
+
+        SA.FnAddNodeReferenceParam(self, "node_OpScript_CreateABCSources", createABCSources_Node)
+
+        return createABCSources_Node
 
     def setInstanceSourceTypeNode(self):
         instanceSourceType_Node = NodegraphAPI.CreateNode("AttributeSet", self)
@@ -137,8 +152,8 @@ class PrmanInstanceArrayNode(NodegraphAPI.SuperTool):
         instanceSourceType_Node.getParameter("paths").resizeArray(len(self.abcGeoPathsList))
 
         for idx in xrange(0, len(self.abcGeoPathsList)):
-            instanceSourceType_Node.getParameter("paths.i" + str(idx)).setExpression("getParent().instanceSourcesLoc\
-                + \"/\"\"" + self.abcGeoPathsList[idx].rsplit("/", 1)[1].split(".abc", 1)[0] + "\"", 1)
+            instanceSourceType_Node.getParameter("paths.i" + str(idx)).setExpression(("getParent().instanceSourcesLoc "
+                "+ \"/\"\"" + self.abcGeoPathsList[idx].rsplit("/", 1)[1].split(".abc", 1)[0] + "\""), 1)
 
         SA.FnAddNodeReferenceParam(self, "node_ASet_AlembicGeoToInstanceSource", instanceSourceType_Node)
 
@@ -179,8 +194,8 @@ class PrmanInstanceArrayNode(NodegraphAPI.SuperTool):
         previewPointCloudSetup_UserGroup = previewPointCloudSetup_Node.getParameters().createChildGroup("user")
         previewPointCloudSetup_UserGroup.createChildString("previewPointCloudName", "")
         if self.getParameterValue("abcScatterPath", 1):
-            previewPointCloudSetup_Node.getParameter("user.previewPointCloudName").setExpression("\"" +
-            self.abcScatterScenegraphLocation.rsplit("/", 1)[1] + "_previewCloud\"", True)
+            previewPointCloudSetup_Node.getParameter("user.previewPointCloudName").setExpression(("\"" +
+            self.abcScatterScenegraphLocation.rsplit("/", 1)[1] + "_previewCloud\""), True)
 
         previewPointCloudSetup_Node.getParameter("applyWhen").setValue("immediate", 1)
         previewPointCloudSetup_Node.getParameter("applyWhere").setValue("at locations matching CEL", 1)
@@ -331,8 +346,8 @@ _nodeFieldsHints = {
         "help" : "Control whether or not the velocity motion blur will be computed.",
         "widget": "checkBox"
     },
-    "PrmanInstanceArray.velocityMultiplier":{
-        "label" : "Velocity Multiplier",
+    "PrmanInstanceArray.intensityMultiplier":{
+        "label" : "Intensity Multiplier",
         "help" : "Control the intensity of the velocity motion blur effect.",
         "slider" : "True",
         "min" : "0.1",

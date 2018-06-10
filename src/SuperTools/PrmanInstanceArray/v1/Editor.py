@@ -93,9 +93,9 @@ class PrmanInstanceArrayEditor(QtGui.QWidget):
         useMotionBlurPolicy = UI4.FormMaster.CreateParameterPolicy(
             motionBlurGroup, self.__node.getParameter("useMotionBlur"))
         motionBlurGroup.addChildPolicy(useMotionBlurPolicy)
-        velocityMultiplierPolicy = UI4.FormMaster.CreateParameterPolicy(
-            motionBlurGroup, self.__node.getParameter("velocityMultiplier"))
-        motionBlurGroup.addChildPolicy(velocityMultiplierPolicy)
+        intensityMultiplierPolicy = UI4.FormMaster.CreateParameterPolicy(
+            motionBlurGroup, self.__node.getParameter("intensityMultiplier"))
+        motionBlurGroup.addChildPolicy(intensityMultiplierPolicy)
 
         widgetUI = factory.buildWidget(self, motionBlurGroup)
         self.layout().addWidget(widgetUI)
