@@ -70,7 +70,7 @@ class ComputeInstanceArrayOp : public Foundry::Katana::GeolibOp {
             std::vector<Imath::M44f> matricesVector;
             matricesVector.reserve(protoIndicesAttrVec.size());
 
-            for (unsigned int instanceIdx; instanceIdx < protoIndicesAttrVec.size(); ++instanceIdx)
+            for (unsigned int instanceIdx = 0; instanceIdx < protoIndicesAttrVec.size(); ++instanceIdx)
             {
                 Imath::M44f currentMatrix;
 

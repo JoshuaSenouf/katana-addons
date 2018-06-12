@@ -25,13 +25,15 @@ if instanceCount == nil then
     do return end
 end
 
+instanceCount = Interface.GetAttr("geometry.instanceIndex"):getNumberOfValues() - 1
+
 local scatterDensityPercentage = 100 - Interface.GetOpArg("user.scatterDensity"):getValue()
 local scatterDensityRange = instanceCount * (scatterDensityPercentage / 100)
 local omitListArray = {}
 
 if scatterDensityPercentage > 0 then
     for idx = 0, scatterDensityRange do
-        table.insert(omitListArray, math.floor(i * instanceCount / scatterDensityRange))
+        table.insert(omitListArray, math.floor(idx * instanceCount / scatterDensityRange))
     end
 
     Interface.SetAttr("geometry.omitList", IntAttribute(omitListArray, 1))
