@@ -33,12 +33,15 @@ def registerComputeInstanceArray():
         if loadingModeParam.getValue(frameTime) == "during op resolve":
             attrSetBuilder = FnGeolibServices.OpArgsBuilders.AttributeSet()
             attrSetBuilder.setCEL([instanceArrayLocParam.getValue(frameTime)])
-            attrSetBuilder.setAttr("ops.{name}".format(name = node.getName()),
+            attrSetBuilder.setAttr("ops.{opName}".format(opName = node.getName()),
                 FnAttribute.GroupBuilder()
                 .set("opType", "ComputeInstanceArray")
                 .set("opArgs", argsGb.build())
                 .set("resolveIds", "PrmanInstanceArray")
                 .build())
+
+            interface.appendOp("AttributeSet", attrSetBuilder.build())
+
         elif loadingModeParam.getValue(frameTime) == "immediate":
             interface.appendOp("ComputeInstanceArray", argsGb.build())
         else:
