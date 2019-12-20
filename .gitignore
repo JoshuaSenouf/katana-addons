@@ -6,3 +6,4 @@
 # Files
 
 CMakeLists.txt.user
+*.pyc
