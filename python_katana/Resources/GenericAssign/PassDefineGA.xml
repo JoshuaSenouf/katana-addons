@@ -1,0 +1,132 @@
+<args format="1.0" scope="/root/passes//*" createGenericAssignNodeType="Yes" nodeFlavors="_hide">
+    <group name="PassDefine" open="False" hideTitle="True">
+        <int name="enablePass" label="Enable Pass" default="0" widget="checkBox" constant="1">
+            <help>
+                Will setup the pass to be enabled, which means it can be used by the "PassResolve" node to setup your SceneGraph accordingly.
+            </help>
+        </int>
+        <group name="definition" label="Definition" open="True">
+            <string name="type" label="Type" default="beauty" constant="1" widget="popup" options="beauty|grey|indirect|shadow|matte|*">
+                <help>
+                    Will setup the type of your pass.
+                </help>
+            </string>
+            <string name="prefix" label="Prefix" default="char" constant="1" widget="popup" options="char|env|prop|vhcl|fx|*">
+                <help>
+                    Will setup the prefix of your pass.
+                </help>
+            </string>
+            <string name="element" label="Element" default="element" constant="1">
+                <help>
+                    Will setup the element of your pass.
+                </help>
+            </string>
+            <string name="suffix" label="Suffix" default="010" constant="1" widget="popup" options="010|020|030|040|050|060|070|080|090|*">
+                <help>
+                    Will setup the suffix of your pass.
+                </help>
+            </string>
+        </group>
+        <group name="visibility" label="Visibility" open="True">
+            <int name="hideNonMatch" label="Hide Non-Matching Locations" default="1" widget="checkBox" constant="1">
+                <help>
+                    Will hide the <b>direct</b> children of "/root/world" that are not matching any of the provided statement(s).
+                </help>
+            </int>
+            <int name="pruneNonMatch" label="Prune Non-Matching Locations" default="1" widget="checkBox" constant="1">
+                <help>
+                    Will prune <b>all</b> the location(s) that are not matching any of the provided statement(s), i.e. a location that will never match anything even down the line of a recursive CEL statement for example.
+                </help>
+            </int>
+            <group name="show" label="Show" open="True">
+                <string name="global" label="Global" default="" widget="cel" constant="1">
+                    <help>
+                        Will expose these locations(s) as visible in your SceneGraph and to the renderer.
+                    </help>
+                </string>
+                <string name="cameras" label="Cameras" default="" widget="cel" constant="1">
+                    <help>
+                        Will expose these location(s) as visible in your SceneGraph and to the renderer, if they are of type "camera".
+                    </help>
+                </string>
+                <string name="lights" label="Lights" default="" widget="cel" constant="1">
+                    <help>
+                        Will expose these location(s) as visible in your SceneGraph and to the renderer, if they are of type "light" or "rig".
+                    </help>
+                </string>
+            </group>
+            <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                <help>
+                    Will expose these locations(s) as hidden in your SceneGraph and to the renderer.
+                </help>
+            </string>
+        </group>
+        <group name="rays" label="Rays" open="True">
+            <group name="preset" label="Preset" open="True">
+                <string name="trace" label="Trace" default="" widget="cel" constant="1">
+                    <help>
+                        Will expose these locations(s) <b>exclusively</b> to the indirect and transmission/shadow rays in your pass.
+                    </help>
+                </string>
+                <string name="indirect" label="Indirect" default="" widget="cel" constant="1">
+                    <help>
+                        Will expose these locations(s) <b>exclusively</b> to the indirect rays in your pass.
+                    </help>
+                </string>
+                <string name="shadow" label="Shadow" default="" widget="cel" constant="1">
+                    <help>
+                        Will expose these locations(s) <b>exclusively</b> to the transmission/shadow rays in your pass.
+                    </help>
+                </string>
+            </group>
+            <group name="camera" label="Camera" open="False">
+                <string name="show" label="Show" default="" widget="cel" constant="1">
+                    <help>
+                        Will expose these locations(s) to the camera rays in your pass.
+                    </help>
+                </string>
+                <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                    <help>
+                        Will hide these locations(s) to the camera rays in your pass.
+                    </help>
+                </string>
+            </group>
+            <group name="indirect" label="Indirect" open="False">
+                <string name="show" label="Show" default="" widget="cel" constant="1">
+                    <help>
+                        Will expose these locations(s) to the indirect rays in your pass.
+                    </help>
+                </string>
+                <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                    <help>
+                        Will hide these locations(s) to the indirect rays in your pass.
+                    </help>
+                </string>
+            </group>
+            <group name="transmission" label="Transmission" open="False">
+                <string name="show" label="Show" default="" widget="cel" constant="1">
+                    <help>
+                        Will expose these locations(s) to the transmission/shadow rays in your pass.
+                    </help>
+                </string>
+                <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                    <help>
+                        Will hide these locations(s) to the transmission/shadow rays in your pass.
+                    </help>
+                </string>
+            </group>
+            <group name="matte" label="Matte" open="False">
+                <string name="show" label="Show" default="" widget="cel" constant="1">
+                    <help>
+                        Will expose these locations(s) as mattes in your pass.
+                    </help>
+                </string>
+                <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                    <help>
+                        Will hide these locations(s) as mattes in your pass.
+                    </help>
+                </string>
+            </group>
+        </group>
+    </group>
+</args>

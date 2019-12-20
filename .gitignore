@@ -1,6 +1,6 @@
 # Folders
 
-build/*
+*build/*
 .vscode/*
 
 # Files
