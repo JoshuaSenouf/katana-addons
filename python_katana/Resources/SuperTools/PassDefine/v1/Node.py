@@ -15,6 +15,9 @@ logger.setLevel(logging.WARNING)
 class PassDefineNode(NodegraphAPI.SuperTool):
     def __init__(self):
         logger.debug("PassDefineNode - __init__()")
+
+        self.hideNodegraphGroupControls()
+
         self.addInputPort("pass_input")
         self.addOutputPort("pass_output")
 

@@ -32,7 +32,7 @@
                 </help>
             </string>
         </group>
-        <group name="visibility" label="Visibility" open="True">
+        <group name="visibility" label="Visibility" open="False">
             <int name="hideNonMatch" label="Hide Non-Matching Locations" default="1" widget="checkBox" constant="1">
                 <help>
                     Will hide the <b>direct</b> children of "/root/world" that are not matching any of the provided statement(s).
@@ -66,30 +66,7 @@
                 </help>
             </string>
         </group>
-        <group name="rays" label="Rays" open="True">
-            <!-- <group name="preset" label="Preset" open="True">
-                <string name="trace" label="Trace" default="" widget="cel" constant="1">
-                    <help>
-                        Will expose these locations(s) <b>exclusively</b> to the indirect and transmission/shadow rays in your pass.
-                    </help>
-                </string>
-                <string name="indirect" label="Indirect" default="" widget="cel" constant="1">
-                    <help>
-                        Will expose these locations(s) <b>exclusively</b> to the indirect rays in your pass.
-                    </help>
-                </string>
-                <string name="shadow" label="Shadow" default="" widget="cel" constant="1">
-                    <help>
-                        Will expose these locations(s) <b>exclusively</b> to the transmission/shadow rays in your pass.
-                    </help>
-                </string>
-            <hintdict name="conditionalVisOps">
-                <string value="../../renderer" name="conditionalVisPath"/>
-                <string value="equalTo" name="conditionalVisOp"/>
-                <string value="prman" name="conditionalVisValue"/>
-            </hintdict>
-            </group> -->
-
+        <group name="rays" label="Rays" open="False">
             <group name="camera" label="Camera" open="False">
                 <string name="show" label="Show" default="" widget="cel" constant="1">
                     <help>
