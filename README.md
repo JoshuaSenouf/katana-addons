@@ -1,10 +1,12 @@
-JSKatana
-======
+katana-ops
+===
 
 Tools
 -----
 
-* [PrmanInstanceArray](https://github.com/JoshuaSenouf/js-katana/tree/master/src/SuperTools/PrmanInstanceArray)
+* PassDefine
+* PassResolve
+* [PrmanInstanceArray](https://github.com/JoshuaSenouf/katana-ops/tree/master/src/SuperTools/PrmanInstanceArray)
 
 How to use
 ------
@@ -13,11 +15,10 @@ These tools were written and compiled for Linux, with VSCode as the IDE, CMake a
 
 Download the source, build the project structure using CMake 3.x, open the project using your favorite IDE (tested on VSCode), build the project, execute a "make install" and everything will be installed by default under
 ```
-"${HOME}/workspace/katana/JSKatana" (This can be changed in the main CMakeLists.txt).
+"${HOME}/workspace/katana/katana-ops" (This can be changed in the main CMakeLists.txt).
 ```
 
 Dependencies
 ------
 
-* Katana 2+
-* RenderMan 21+
+* Katana 3+

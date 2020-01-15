@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 3.2)
-project(JSKatana)
+project(katana-ops)
 
 set(KATANA_HOME "$ENV{KATANA_HOME}" CACHE PATH "Path to Katana")
 
-set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/workspace/katana/JSKatana" CACHE PATH "Installation directory of JSKatana" FORCE)
+set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/workspace/katana/katana-ops" CACHE PATH "Installation directory of katana-ops" FORCE)
 set(CMAKE_CXX_STANDARD 11)
 
 find_package(Katana PATHS "${KATANA_HOME}/plugin_apis/cmake" REQUIRED)
