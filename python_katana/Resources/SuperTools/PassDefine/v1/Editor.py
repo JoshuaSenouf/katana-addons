@@ -11,7 +11,7 @@ from Katana import (
 
 
 logger = logging.getLogger("PassDefine.Editor")
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARNING)
 
 update_parameters_list = [
     "passRootLocation"
@@ -45,16 +45,16 @@ class PassDefineEditor(QtWidgets.QWidget):
         self.layout().addWidget(widget_ui)
 
         # TODO
-        self.create_ui_from_generic_assign("PassDefine", "pass_define_ga")
+        self.create_ui_from_generic_assign("passDefine", "pass_define_ga")
 
         # TODO
         self.pass_define_ga_node = SA.get_reference_node(self.__node, "pass_define_ga")
         # TODO
         self.pass_define_ga_update_parameters_list = [
-            self.pass_define_ga_node.getParameter("args.PassDefine.definition.type.enable"),
-            self.pass_define_ga_node.getParameter("args.PassDefine.definition.prefix.enable"),
-            self.pass_define_ga_node.getParameter("args.PassDefine.definition.element.enable"),
-            self.pass_define_ga_node.getParameter("args.PassDefine.definition.suffix.enable")
+            self.pass_define_ga_node.getParameter("args.passDefine.definition.type.enable"),
+            self.pass_define_ga_node.getParameter("args.passDefine.definition.prefix.enable"),
+            self.pass_define_ga_node.getParameter("args.passDefine.definition.element.enable"),
+            self.pass_define_ga_node.getParameter("args.passDefine.definition.suffix.enable")
         ]
 
     def create_ui_from_generic_assign(self, generic_assign_name, node_reference_name):
@@ -134,5 +134,7 @@ class PassDefineEditor(QtWidgets.QWidget):
         if self.__updateOnIdle:
             self.__updateOnIdle = False
 
+            self.__node.clear_pass_data()
+            self.__node.update_pass_data(self.pass_define_ga_node)
             self.__node.update_pass_location(self.pass_define_ga_node)
             # self.__node.reset_node_network()

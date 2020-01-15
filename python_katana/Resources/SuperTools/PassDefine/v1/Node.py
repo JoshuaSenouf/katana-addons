@@ -8,8 +8,8 @@ from Katana import (
 )
 
 
-logger = logging.getLogger("PassDefine.Editor")
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger("PassDefine.Node")
+logger.setLevel(logging.WARNING)
 
 
 class PassDefineNode(NodegraphAPI.SuperTool):
@@ -92,50 +92,6 @@ class PassDefineNode(NodegraphAPI.SuperTool):
 
         return pass_define_ga_node
 
-    def update_pass_data(self, pass_define_ga_node):
-        logger.debug("PassDefineNode - update_pass_data()")
-
-        # TODO
-        self.pass_data["enablePass"] = {}
-        self.pass_data["enablePass"]["value"] = pass_define_ga_node.getParameter(
-            "args.PassDefine.enablePass.value"
-        ).getValue(0)
-        self.pass_data["enablePass"]["enable"] = pass_define_ga_node.getParameter(
-            "args.PassDefine.enablePass.enable"
-        ).getValue(0)
-
-        if not self.pass_data["enablePass"].get("default"):
-            self.pass_data["enablePass"]["default"] = pass_define_ga_node.getParameter(
-                "args.PassDefine.enablePass.default"
-            ).getValue(0)
-
-        # TODO
-        self.pass_data["definition"] = {}
-        for child in pass_define_ga_node.getParameter("args.PassDefine.definition").getChildren():
-            child_param_name = child.getName()
-
-            if child_param_name == "__hints":
-                continue
-
-            self.pass_data["definition"][child_param_name] = {}
-            self.pass_data["definition"][child_param_name]["value"] = pass_define_ga_node.getParameter(
-                "args.PassDefine.definition.{param_name}.value".format(
-                    param_name=child_param_name
-                )
-            ).getValue(0)
-            self.pass_data["definition"][child_param_name]["enable"] = pass_define_ga_node.getParameter(
-                "args.PassDefine.definition.{param_name}.enable".format(
-                    param_name=child_param_name
-                )
-            ).getValue(0)
-
-            if not self.pass_data["definition"][child_param_name].get("default"):
-                self.pass_data["definition"][child_param_name]["default"] = pass_define_ga_node.getParameter(
-                    "args.PassDefine.definition.{param_name}.default".format(
-                        param_name=child_param_name
-                    )
-                ).getValue(0)
-
     def setup_merge_inputs_node(self, merge_node):
         logger.debug("PassDefineNode - setup_merge_inputs_node()")
 
@@ -158,9 +114,9 @@ class PassDefineNode(NodegraphAPI.SuperTool):
             ("getParent().getNode().getParameter(\"passRootLocation\").getValue(frame)")
         )
         opscript_node.getParameter("user.enablePass").setExpression(
-            ("getParent().getNode().getChild(\"{node_name}\").getParameter(\"args.PassDefine.enablePass" +
+            ("getParent().getNode().getChild(\"{node_name}\").getParameter(\"args.passDefine.enablePass" +
             ".value\").getValue(frame) if getParent().getNode().getChild(\"{node_name}\")." +
-            "getParameter(\"args.PassDefine.enablePass.enable\").getValue(frame) else " +
+            "getParameter(\"args.passDefine.enablePass.enable\").getValue(frame) else " +
             "{default_value}").format(
                 node_name=pass_define_ga_node.getName(),
                 default_value=self.pass_data["enablePass"]["default"]
@@ -168,9 +124,9 @@ class PassDefineNode(NodegraphAPI.SuperTool):
 
         for param_name in self.pass_data["definition"].keys():
             opscript_node.getParameter("user.{param_name}".format(param_name=param_name)).setExpression(
-                ("getParent().getNode().getChild(\"{node_name}\").getParameter(\"args.PassDefine.definition" +
+                ("getParent().getNode().getChild(\"{node_name}\").getParameter(\"args.passDefine.definition" +
                 ".{param_name}.value\").getValue(frame) if getParent().getNode().getChild(\"{node_name}\")." +
-                "getParameter(\"args.PassDefine.definition.{param_name}.enable\").getValue(frame) else " +
+                "getParameter(\"args.passDefine.definition.{param_name}.enable\").getValue(frame) else " +
                 "\"{default_value}\"").format(
                     node_name=pass_define_ga_node.getName(),
                     param_name=param_name,
@@ -180,6 +136,50 @@ class PassDefineNode(NodegraphAPI.SuperTool):
         opscript_node.getParameter("applyWhen").setValue("immediate", 0)
         opscript_node.getParameter("applyWhere").setValue("at all locations", 0)
         opscript_node.getParameter("inputBehavior").setValue("only valid", 0)
+
+    def update_pass_data(self, pass_define_ga_node):
+        logger.debug("PassDefineNode - update_pass_data()")
+
+        # TODO
+        self.pass_data["enablePass"] = {}
+        self.pass_data["enablePass"]["value"] = pass_define_ga_node.getParameter(
+            "args.passDefine.enablePass.value"
+        ).getValue(0)
+        self.pass_data["enablePass"]["enable"] = pass_define_ga_node.getParameter(
+            "args.passDefine.enablePass.enable"
+        ).getValue(0)
+
+        if not self.pass_data["enablePass"].get("default"):
+            self.pass_data["enablePass"]["default"] = pass_define_ga_node.getParameter(
+                "args.passDefine.enablePass.default"
+            ).getValue(0)
+
+        # TODO
+        self.pass_data["definition"] = {}
+        for child in pass_define_ga_node.getParameter("args.passDefine.definition").getChildren():
+            child_param_name = child.getName()
+
+            if child_param_name == "__hints":
+                continue
+
+            self.pass_data["definition"][child_param_name] = {}
+            self.pass_data["definition"][child_param_name]["value"] = pass_define_ga_node.getParameter(
+                "args.passDefine.definition.{param_name}.value".format(
+                    param_name=child_param_name
+                )
+            ).getValue(0)
+            self.pass_data["definition"][child_param_name]["enable"] = pass_define_ga_node.getParameter(
+                "args.passDefine.definition.{param_name}.enable".format(
+                    param_name=child_param_name
+                )
+            ).getValue(0)
+
+            if not self.pass_data["definition"][child_param_name].get("default"):
+                self.pass_data["definition"][child_param_name]["default"] = pass_define_ga_node.getParameter(
+                    "args.passDefine.definition.{param_name}.default".format(
+                        param_name=child_param_name
+                    )
+                ).getValue(0)
 
     def update_pass_location(self, pass_define_ga_node):
         logger.debug("PassDefineNode - update_pass_location()")
@@ -210,6 +210,12 @@ class PassDefineNode(NodegraphAPI.SuperTool):
                 pass_location=self.pass_location
             )
         )
+
+    def clear_pass_data(self):
+        self.pass_data = {}
+        self.pass_root_location = ""
+        self.pass_name = ""
+        self.pass_location = ""
 
     def reset_node_network(self):
         logger.debug("PassDefineNode - reset_node_network()")

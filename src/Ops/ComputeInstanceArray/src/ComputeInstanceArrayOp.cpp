@@ -50,7 +50,7 @@ class ComputeInstanceArrayOp : public Foundry::Katana::GeolibOp {
                 "geometry.arbitrary." + scalePrimvarAttr.getValue() + ".value");
             FnAttribute::IntAttribute protoIndicesAttr = interface.getAttr(
                 "geometry.arbitrary." + protoIndicesPrimvarAttr.getValue() + ".value");
-            
+
             if (!positionAttr.isValid() ||
                 !protoIndicesAttr.isValid())
             {
@@ -58,7 +58,7 @@ class ComputeInstanceArrayOp : public Foundry::Katana::GeolibOp {
                 " used for scattering the geometry does not contain all the necessary primvars! "
                 "(\"" + positionPrimvarAttr.getValue() + "\" and \"" + protoIndicesPrimvarAttr.getValue() + "\","
                 " as requested by user on the node)") << std::endl;
-            
+
                 return;
             }
 
