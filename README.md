@@ -4,8 +4,6 @@ katana-ops
 Tools
 -----
 
-* PassDefine
-* PassResolve
 * [PrmanInstanceArray](https://github.com/JoshuaSenouf/katana-ops/tree/master/src/SuperTools/PrmanInstanceArray)
 
 How to use
