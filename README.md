@@ -1,15 +1,20 @@
 katana-ops
 ===
 
-Tools
------
+Collection of tools, nodes and Ops for Foundry's Katana.
 
-* PassDefine
-* PassResolve
-* [PrmanInstanceArray](https://github.com/JoshuaSenouf/katana-ops/tree/master/src/SuperTools/PrmanInstanceArray)
+What it contains
+---
+
+* Nodes:
+    * PassDefine
+    * PassResolve
+    * [PrmanInstanceArray](https://github.com/JoshuaSenouf/katana-ops/tree/master/src/SuperTools/PrmanInstanceArray)
+* Ops:
+    * ComputeInstanceArray
 
 How to use
-------
+---
 
 These tools were written and compiled for Linux, with VSCode as the IDE, CMake as the building tool, a C++11 compiler in mind, and the latest version of Foundry's Katana available.
 
@@ -19,6 +24,6 @@ Download the source, build the project structure using CMake 3.x, open the proje
 ```
 
 Dependencies
-------
+---
 
 * Katana 3+

@@ -1,12 +1,13 @@
-cmake_minimum_required (VERSION 3.2)
-project(katana-ops)
+cmake_minimum_required (VERSION 3.0)
+project(katana_ops)
 
 set(KATANA_HOME "$ENV{KATANA_HOME}" CACHE PATH "Path to Katana")
 
-set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/workspace/katana/katana-ops" CACHE PATH "Installation directory of katana-ops" FORCE)
-set(CMAKE_CXX_STANDARD 11)
+list(APPEND CMAKE_MODULE_PATH ${KATANA_HOME}/plugins/Src/cmake)
 
 find_package(Katana PATHS "${KATANA_HOME}/plugin_apis/cmake" REQUIRED)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Wextra -Wpedantic -std=c++11")
 
 # Ensure we don't compile DSOs with undefined symbols.
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
@@ -14,7 +15,5 @@ if (CMAKE_SYSTEM_NAME MATCHES Linux)
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
 endif ()
 
-#-------------------------------------------------------------------------------
-
-add_subdirectory(src/Ops/ComputeInstanceArray)
-add_subdirectory(src/SuperTools)
+add_subdirectory(src)
+add_subdirectory(python)
