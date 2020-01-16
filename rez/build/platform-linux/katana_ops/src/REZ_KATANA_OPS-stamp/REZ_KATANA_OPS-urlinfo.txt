@@ -1,0 +1,3 @@
+repository='external project URL'
+module='/home/jsenouf/workspace/git/web/katana-ops/rez/..'
+tag=''

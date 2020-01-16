@@ -1,0 +1,1 @@
+cmd='bash;/home/jsenouf/workspace/git/web/katana-ops/rez/configure.sh;/tmp/rez/katana_ops/0.0.1;/tmp/rez/katana_ops/0.0.1/build'

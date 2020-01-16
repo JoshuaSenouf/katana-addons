@@ -1,0 +1,116 @@
+{
+    "default_patch_lock": "no_lock",
+    "rez_version": "2.50.0",
+    "package_requests": [
+        "cmake-3+",
+        "gcc-6+",
+        "ilmbase-2.2.1+<2.4",
+        "katana-3.0+",
+        "python-2.7+<3",
+        "platform-linux"
+    ],
+    "serialize_version": "4.3",
+    "resolved_packages": [
+        {
+            "variables": {
+                "index": null,
+                "version": "linux",
+                "repository_type": "filesystem",
+                "location": "/home/jsenouf/workspace/local/rez/packages",
+                "name": "platform"
+            },
+            "key": "filesystem.variant"
+        },
+        {
+            "variables": {
+                "index": 0,
+                "version": "6.3.1",
+                "repository_type": "filesystem",
+                "location": "/home/jsenouf/workspace/local/rez/packages",
+                "name": "gcc"
+            },
+            "key": "filesystem.variant"
+        },
+        {
+            "variables": {
+                "index": 0,
+                "version": "3.15.3",
+                "repository_type": "filesystem",
+                "location": "/home/jsenouf/workspace/local/rez/packages",
+                "name": "cmake"
+            },
+            "key": "filesystem.variant"
+        },
+        {
+            "variables": {
+                "index": 0,
+                "version": "2.2.1",
+                "repository_type": "filesystem",
+                "location": "/home/jsenouf/workspace/local/rez/packages",
+                "name": "ilmbase"
+            },
+            "key": "filesystem.variant"
+        },
+        {
+            "variables": {
+                "index": 0,
+                "version": "0.0.1",
+                "repository_type": "filesystem",
+                "location": "/home/jsenouf/workspace/local/rez/packages",
+                "name": "license_manager"
+            },
+            "key": "filesystem.variant"
+        },
+        {
+            "variables": {
+                "index": 0,
+                "version": "3.5.1",
+                "repository_type": "filesystem",
+                "location": "/home/jsenouf/workspace/local/rez/packages",
+                "name": "katana"
+            },
+            "key": "filesystem.variant"
+        },
+        {
+            "variables": {
+                "index": 0,
+                "version": "2.7.16",
+                "repository_type": "filesystem",
+                "location": "/home/jsenouf/workspace/local/rez/packages",
+                "name": "python"
+            },
+            "key": "filesystem.variant"
+        }
+    ],
+    "num_loaded_packages": 8,
+    "status": "solved",
+    "implicit_packages": [
+        "~platform==linux",
+        "~arch==x86_64",
+        "~os==CentOS-7.6.1810"
+    ],
+    "host": "MTLws032",
+    "user": "jsenouf",
+    "package_filter": [],
+    "arch": "x86_64",
+    "solve_time": 0.007828950881958008,
+    "building": true,
+    "requested_timestamp": null,
+    "parent_suite_path": null,
+    "suite_context_name": null,
+    "package_orderers": null,
+    "graph": "{'nodes': [((('fillcolor', '#AAFFAA'), ('fontsize', 10), ('style', 'filled')), [('_9', 'platform-linux[]'), ('_15', 'python-2.7.16[0]'), ('_14', 'katana-3.5.1[0]'), ('_13', 'license_manager-0.0.1[0]'), ('_12', 'ilmbase-2.2.1[0]'), ('_11', 'cmake-3.15.3[0]'), ('_10', 'gcc-6.3.1[0]')]), ((('fillcolor', '#F6F6F6'), ('fontsize', 10), ('style', 'filled,dashed')), [('_17', 'license_manager'), ('_16', 'platform-linux')]), ((('fillcolor', '#FFFFAA'), ('fontsize', 10), ('style', 'filled,dashed')), [('_8', '~os==CentOS-7.6.1810'), ('_7', '~arch==x86_64'), ('_6', 'platform==linux'), ('_5', 'python-2.7+<3'), ('_4', 'katana-3.0+'), ('_3', 'ilmbase-2.2.1+<2.4'), ('_2', 'gcc-6+'), ('_1', 'cmake-3+')])], 'edges': [((('arrowsize', '0.5'),), [('_6', '_9'), ('_5', '_15'), ('_4', '_14'), ('_3', '_12'), ('_2', '_10'), ('_1', '_11'), ('_17', '_13'), ('_16', '_9'), ('_15', '_1'), ('_15', '_2'), ('_15', '_16'), ('_14', '_1'), ('_14', '_16'), ('_14', '_17'), ('_13', '_1'), ('_13', '_16'), ('_12', '_1'), ('_12', '_2'), ('_12', '_16'), ('_11', '_2'), ('_11', '_16'), ('_10', '_16')])]}",
+    "failure_description": null,
+    "created": 1579207159,
+    "package_paths": [
+        "/home/jsenouf/workspace/local/rez/packages"
+    ],
+    "platform": "linux",
+    "rez_path": "/home/jsenouf/workspace/local/libs/thirdparty/rez/2.50.0/lib/python2.7/site-packages/rez",
+    "patch_locks": {},
+    "from_cache": false,
+    "timestamp": 1579207159,
+    "caching": true,
+    "load_time": 0.0,
+    "os": "CentOS-7.6.1810"
+}

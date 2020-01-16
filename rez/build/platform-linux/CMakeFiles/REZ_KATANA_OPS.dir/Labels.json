@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/jsenouf/workspace/git/web/katana-ops/rez/build/platform-linux/CMakeFiles/REZ_KATANA_OPS"
+		},
+		{
+			"file" : "/home/jsenouf/workspace/git/web/katana-ops/rez/build/platform-linux/CMakeFiles/REZ_KATANA_OPS.rule"
+		},
+		{
+			"file" : "/home/jsenouf/workspace/git/web/katana-ops/rez/build/platform-linux/CMakeFiles/REZ_KATANA_OPS-complete.rule"
+		},
+		{
+			"file" : "/home/jsenouf/workspace/git/web/katana-ops/rez/build/platform-linux/katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-install.rule"
+		},
+		{
+			"file" : "/home/jsenouf/workspace/git/web/katana-ops/rez/build/platform-linux/katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-mkdir.rule"
+		},
+		{
+			"file" : "/home/jsenouf/workspace/git/web/katana-ops/rez/build/platform-linux/katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-download.rule"
+		},
+		{
+			"file" : "/home/jsenouf/workspace/git/web/katana-ops/rez/build/platform-linux/katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-update.rule"
+		},
+		{
+			"file" : "/home/jsenouf/workspace/git/web/katana-ops/rez/build/platform-linux/katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-patch.rule"
+		},
+		{
+			"file" : "/home/jsenouf/workspace/git/web/katana-ops/rez/build/platform-linux/katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-configure.rule"
+		},
+		{
+			"file" : "/home/jsenouf/workspace/git/web/katana-ops/rez/build/platform-linux/katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-build.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"REZ_KATANA_OPS"
+		],
+		"name" : "REZ_KATANA_OPS"
+	}
+}

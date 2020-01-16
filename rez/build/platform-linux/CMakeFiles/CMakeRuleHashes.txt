@@ -1,0 +1,10 @@
+# Hashes of file build rules.
+d05a6dbb7a370ba38142ca6b09e042cd CMakeFiles/REZ_KATANA_OPS
+b08fa81102335b3c79ed88fab0437ba9 CMakeFiles/REZ_KATANA_OPS-complete
+ec5a692f680a3e24c54b37f6af61492a katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-build
+93f7a6d45f0ef0a0d82aef1a4743f7d3 katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-configure
+14b4ca97f3acfd59069df8f8698cc5a9 katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-download
+3a69b987f02e10cd9d957f3c75fbfecc katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-install
+41325e14c9ffce3d71097fdf6d3092bc katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-mkdir
+8ae6db853519207cd13d892ddc7fb06d katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-patch
+eae4ea75ed0e87d572016f3e86030d0b katana_ops/src/REZ_KATANA_OPS-stamp/REZ_KATANA_OPS-update
