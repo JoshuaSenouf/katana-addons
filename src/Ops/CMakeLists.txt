@@ -1,0 +1,3 @@
+add_subdirectory(PassCollections)
+add_subdirectory(PassRays)
+add_subdirectory(PassVisibility)

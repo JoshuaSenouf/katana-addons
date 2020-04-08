@@ -1,8 +1,10 @@
 # Folders
 
-build/*
+*build/*
+*rez/build/*
 .vscode/*
 
 # Files
 
 CMakeLists.txt.user
+*.pyc
