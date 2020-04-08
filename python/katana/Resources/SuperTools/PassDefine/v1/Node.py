@@ -66,6 +66,8 @@ class PassDefineNode(NodegraphAPI.SuperTool):
         inputDict.update(_node_fields_hints.get(attrName, {}))
 
     def create_merge_inputs_node(self):
+        """
+        """
         logger.debug("PassDefineNode - create_merge_inputs_node()")
 
         merge_inputs_node = NodegraphAPI.CreateNode("Merge", self)
@@ -76,6 +78,8 @@ class PassDefineNode(NodegraphAPI.SuperTool):
         return merge_inputs_node
 
     def create_configure_pass_location_opscript_node(self):
+        """
+        """
         logger.debug("PassDefineNode - create_configure_pass_location_opscript_node()")
 
         configure_pass_location_opscript_node = NodegraphAPI.CreateNode("OpScript", self)
@@ -86,6 +90,8 @@ class PassDefineNode(NodegraphAPI.SuperTool):
         return configure_pass_location_opscript_node
 
     def create_pass_define_ga_node(self):
+        """
+        """
         logger.debug("PassDefineNode - create_pass_define_ga_node()")
 
         pass_define_ga_node = NodegraphAPI.CreateNode("PassDefineGA", self)
@@ -96,11 +102,15 @@ class PassDefineNode(NodegraphAPI.SuperTool):
         return pass_define_ga_node
 
     def setup_merge_inputs_node(self, merge_node):
+        """
+        """
         logger.debug("PassDefineNode - setup_merge_inputs_node()")
 
         merge_node.addInputPort("input_scene")
 
     def setup_configure_pass_location_opscript_node(self, opscript_node, pass_define_ga_node):
+        """
+        """
         logger.debug("PassDefineNode - setup_configure_pass_location_opscript_node()")
 
         opscript_node.getParameter("script.lua").setValue(OS.configure_pass_location_opscript(), 0)
@@ -141,6 +151,8 @@ class PassDefineNode(NodegraphAPI.SuperTool):
         opscript_node.getParameter("inputBehavior").setValue("only valid", 0)
 
     def update_pass_data(self, pass_define_ga_node):
+        """
+        """
         logger.debug("PassDefineNode - update_pass_data()")
 
         # TODO
@@ -185,6 +197,8 @@ class PassDefineNode(NodegraphAPI.SuperTool):
                 ).getValue(0)
 
     def update_pass_location(self, pass_define_ga_node):
+        """
+        """
         logger.debug("PassDefineNode - update_pass_location()")
 
         # TODO: Use the correct frame time instead
@@ -215,12 +229,18 @@ class PassDefineNode(NodegraphAPI.SuperTool):
         )
 
     def clear_pass_data(self):
+        """
+        """
+        logger.debug("PassDefineNode - clear_pass_data()")
+
         self.pass_data = {}
         self.pass_root_location = ""
         self.pass_name = ""
         self.pass_location = ""
 
     def reset_node_network(self):
+        """
+        """
         logger.debug("PassDefineNode - reset_node_network()")
 
         for child_node in self.getChildren():

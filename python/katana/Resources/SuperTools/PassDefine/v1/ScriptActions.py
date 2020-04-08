@@ -4,6 +4,8 @@ from Katana import (
 
 
 def change_node_layout(node, x_spacing=200, y_spacing=100):
+    """
+    """
     pos_x, pos_y = NodegraphAPI.GetNodePosition(node)
 
     # Start far enough to the left to leave room for all the node's inputs
@@ -26,6 +28,8 @@ def change_node_layout(node, x_spacing=200, y_spacing=100):
 
 
 def add_node_reference_param(dest_node, dest_node_param_name, node):
+    """
+    """
     # Get or create the parameter on the given node
     dest_node_param = dest_node.getParameter(dest_node_param_name)
 
@@ -37,6 +41,8 @@ def add_node_reference_param(dest_node, dest_node_param_name, node):
 
 
 def get_reference_node(node, key):
+    """
+    """
     parameter = node.getParameter("node_" + key)
 
     if not parameter:

@@ -6,7 +6,7 @@ set -e
 EXTRACT_PATH=$1
 BUILD_PATH=$2
 INSTALL_PATH=${REZ_BUILD_INSTALL_PATH}
-KATANA_OPS_VERSION=${REZ_BUILD_PROJECT_VERSION}
+KATANA_ADDONS_VERSION=${REZ_BUILD_PROJECT_VERSION}
 
 # We print the arguments passed to the Bash script.
 echo -e "\n"
@@ -18,11 +18,11 @@ echo -e "\n"
 echo -e "[CONFIGURE][ARGS] EXTRACT PATH: ${EXTRACT_PATH}"
 echo -e "[CONFIGURE][ARGS] BUILD PATH: ${BUILD_PATH}"
 echo -e "[CONFIGURE][ARGS] INSTALL PATH: ${INSTALL_PATH}"
-echo -e "[CONFIGURE][ARGS] KATANA-OPS VERSION: ${KATANA_OPS_VERSION}"
+echo -e "[CONFIGURE][ARGS] KATANA-ADDONS VERSION: ${KATANA_ADDONS_VERSION}"
 
 # We check if the arguments variables we need are correctly set.
 # If not, we abort the process.
-if [[ -z ${EXTRACT_PATH} || -z ${BUILD_PATH} || -z ${INSTALL_PATH} || -z ${KATANA_OPS_VERSION} ]]; then
+if [[ -z ${EXTRACT_PATH} || -z ${BUILD_PATH} || -z ${INSTALL_PATH} || -z ${KATANA_ADDONS_VERSION} ]]; then
     echo -e "\n"
     echo -e "[CONFIGURE][ARGS] One or more of the argument variables are empty. Aborting..."
     echo -e "\n"
@@ -30,9 +30,9 @@ if [[ -z ${EXTRACT_PATH} || -z ${BUILD_PATH} || -z ${INSTALL_PATH} || -z ${KATAN
     exit 1
 fi
 
-# We run the configuration script of katana-ops.
+# We run the configuration script of katana-addons.
 echo -e "\n"
-echo -e "[CONFIGURE] Running the configuration script from katana-ops-${KATANA_OPS_VERSION}..."
+echo -e "[CONFIGURE] Running the configuration script from katana-addons-${KATANA_ADDONS_VERSION}..."
 echo -e "\n"
 
 mkdir -p ${BUILD_PATH}
@@ -48,5 +48,5 @@ cmake \
     -DKATANA_HOME=${REZ_KATANA_ROOT}
 
 echo -e "\n"
-echo -e "[CONFIGURE] Finished configuring katana-ops-${KATANA_OPS_VERSION}!"
+echo -e "[CONFIGURE] Finished configuring katana-addons-${KATANA_ADDONS_VERSION}!"
 echo -e "\n"

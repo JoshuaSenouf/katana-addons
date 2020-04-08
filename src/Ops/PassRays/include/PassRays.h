@@ -19,13 +19,13 @@ class PassRays : public Foundry::Katana::GeolibOp
 	private:
 		static void setPassRays(Foundry::Katana::GeolibCookInterface& interface,
     		const std::string& activePassLocation);
-		static void setPassPRManRays(Foundry::Katana::GeolibCookInterface& interface,
+		static void setDlPassRays(Foundry::Katana::GeolibCookInterface& interface,
     		const std::string& activePassLocation,
 			bool& canMatchChildren);
-		static void setPassArnoldRays(Foundry::Katana::GeolibCookInterface& interface,
+		static void setPRManPassRays(Foundry::Katana::GeolibCookInterface& interface,
     		const std::string& activePassLocation,
 			bool& canMatchChildren);
-		static void setPassDlRays(Foundry::Katana::GeolibCookInterface& interface,
+		static void setArnoldPassRays(Foundry::Katana::GeolibCookInterface& interface,
     		const std::string& activePassLocation,
 			bool& canMatchChildren);
 		static bool isCurrentRenderer(Foundry::Katana::GeolibCookInterface& interface,

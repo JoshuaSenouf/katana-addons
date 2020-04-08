@@ -14,6 +14,8 @@ logger.setLevel(logging.WARNING)
 
 class PassResolve(Nodes3DAPI.NodeTypeBuilder):
     def __init__(self, node_name):
+        """
+        """
         logger.debug("PassResolve - __init__()")
 
         super(PassResolve, self).__init__(node_name)
@@ -30,6 +32,8 @@ class PassResolve(Nodes3DAPI.NodeTypeBuilder):
         self.build()
 
     def build_node_parameters(self):
+        """
+        """
         logger.debug("PassResolve - build_node_parameters()")
 
         group_builder = FnAttribute.GroupBuilder()
@@ -45,6 +49,8 @@ class PassResolve(Nodes3DAPI.NodeTypeBuilder):
         self.setParametersTemplateAttr(group_builder.build())
 
     def get_parameters_hints(self):
+        """
+        """
         logger.debug("PassResolve - get_parameters_hints()")
 
         # We describe here our Katana parameters and how they should appear/behave
@@ -67,6 +73,8 @@ class PassResolve(Nodes3DAPI.NodeTypeBuilder):
 
 
 def build_pass_resolve_op_chain(node, interface):
+    """
+    """
     logger.debug("PassResolve - build_pass_resolve_op_chain()")
 
     interface.setMinRequiredInputs(0)
@@ -118,10 +126,10 @@ def build_pass_resolve_op_chain(node, interface):
 
 
 def get_existing_render_node(node):
+    """
+    """
     logger.debug("PassResolve - get_existing_render_node()")
 
-    """
-    """
     connected_ports = node.getOutputPortByIndex(0).getConnectedPorts()
 
     if not connected_ports:
@@ -131,10 +139,10 @@ def get_existing_render_node(node):
 
 
 def setup_render_node(node):
+    """
+    """
     logger.debug("PassResolve - setup_render_node()")
 
-    """
-    """
     render_node = node.get_existing_render_node()
 
     if not render_node:
@@ -146,4 +154,5 @@ def setup_render_node(node):
 
     node.getOutputPortByIndex(0).connect(render_node.getInputPortByIndex(0))
     node_pos_x, node_pos_y = NodegraphAPI.GetNodePosition(node)
+
     NodegraphAPI.SetNodePosition(render_node, (node_pos_x, node_pos_y - 150))

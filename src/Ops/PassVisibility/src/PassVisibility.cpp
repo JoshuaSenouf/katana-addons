@@ -9,9 +9,9 @@ void PassVisibility::setup(Foundry::Katana::GeolibSetupInterface& interface)
 void PassVisibility::cook(Foundry::Katana::GeolibCookInterface& interface)
 {
     // Check if we are using one of the supported renderers.
-    if (!isCurrentRenderer(interface, "prman") &&
-        !isCurrentRenderer(interface, "arnold") &&
-        !isCurrentRenderer(interface, "dl"))
+    if (!isCurrentRenderer(interface, "dl") &&
+        !isCurrentRenderer(interface, "prman") &&
+        !isCurrentRenderer(interface, "arnold"))
     {
         return;
     }
@@ -78,18 +78,23 @@ void PassVisibility::cook(Foundry::Katana::GeolibCookInterface& interface)
     setPassVisibility(interface, activePassLocationValue);
 }
 
+///
 void PassVisibility::setPassVisibility(Foundry::Katana::GeolibCookInterface& interface,
     const std::string& activePassLocation)
 {
     // We gather the visibility related attributes of the pass on the currently evaluated locations.
-    const FnAttribute::StringAttribute globalVisibilityAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.visibility.show.global", activePassLocation);
-    const FnAttribute::StringAttribute camerasVisibilityAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.visibility.show.cameras", activePassLocation);
-    const FnAttribute::StringAttribute lightsVisibilityAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.visibility.show.lights", activePassLocation);
-    const FnAttribute::StringAttribute hideVisibilityAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.visibility.hide", activePassLocation);
+    const FnAttribute::StringAttribute globalVisibilityShowAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.visibility.global.show", activePassLocation);
+    const FnAttribute::StringAttribute globalVisibilityHideAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.visibility.global.hide", activePassLocation);
+    const FnAttribute::StringAttribute camerasVisibilityShowAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.visibility.cameras.show", activePassLocation);
+    const FnAttribute::StringAttribute camerasVisibilityHideAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.visibility.cameras.hide", activePassLocation);
+    const FnAttribute::StringAttribute lightsVisibilityShowAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.visibility.lights.show", activePassLocation);
+    const FnAttribute::StringAttribute lightsVisibilityHideAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.visibility.lights.hide", activePassLocation);
     const FnAttribute::IntAttribute autoHideAttr = Foundry::Katana::GetGlobalAttr(interface,
         "passDefine.visibility.advanced.autoHide", activePassLocation);
     const FnAttribute::IntAttribute autoPruneAttr = Foundry::Katana::GetGlobalAttr(interface,
@@ -123,14 +128,15 @@ void PassVisibility::setPassVisibility(Foundry::Katana::GeolibCookInterface& int
     }
 
     // If the user requested for the currently evaluated location, which can technically be of any types, to be
-    // considered as visible by Katana, and thus the renderer, we set the main Katana visibility attribute to 1.
-    // We also consider that if currently evaluated location is visible, its potential children have at least
+    // considered as either visible or hidden by Katana, and thus the renderer, we set the main Katana visibility
+    // attribute to the appropriate value.
+    // We also evaluate that if the potential children of the currently evaluated location have at least
     // a chance to be visible too. This information will be used later in the Op, and will be crucial in deciding
     // whether or not we should continue the traversal of the children of this location.
-    if (globalVisibilityAttr.isValid())
+    if (globalVisibilityShowAttr.isValid())
     {
         FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
-            interface, globalVisibilityAttr);
+            interface, globalVisibilityShowAttr);
 
         if (matchesCELInfo.matches)
         {
@@ -142,16 +148,32 @@ void PassVisibility::setPassVisibility(Foundry::Katana::GeolibCookInterface& int
             canMatchChildren = true;
         }
     }
-
-    // If the user requested for the currently evaluated location, which has to be of type "camera", to be
-    // considered as visible by Katana, and thus the renderer, we set the main Katana visibility attribute to 1.
-    // We also consider that if currently evaluated location is visible, its potential children have at least
-    // a chance to be visible too. This information will be used later in the Op, and will be crucial in deciding
-    // whether or not we should continue the traversal of the children of this location.
-    if (camerasVisibilityAttr.isValid())
+    if (globalVisibilityHideAttr.isValid())
     {
         FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
-            interface, camerasVisibilityAttr);
+            interface, globalVisibilityHideAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("visible", FnAttribute::IntAttribute(0));
+            visible = false;
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+
+    // If the user requested for the currently evaluated location, which has to be of type "camera", to be
+    // considered as either visible or hidden by Katana, and thus the renderer, we set the main Katana visibility
+    // attribute to the appropriate value.
+    // We also evaluate that if the potential children of the currently evaluated location have at least
+    // a chance to be visible too. This information will be used later in the Op, and will be crucial in deciding
+    // whether or not we should continue the traversal of the children of this location.
+    if (camerasVisibilityShowAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, camerasVisibilityShowAttr);
 
         if (matchesCELInfo.matches)
         {
@@ -166,16 +188,35 @@ void PassVisibility::setPassVisibility(Foundry::Katana::GeolibCookInterface& int
             canMatchChildren = true;
         }
     }
-
-    // If the user requested for the currently evaluated location, which has to be either of type "light" or "rig",
-    // to be considered as visible by Katana, and thus the renderer, we set the main Katana visibility attribute to 1.
-    // We also consider that if currently evaluated location is visible, its potential children have at least
-    // a chance to be visible too. This information will be used later in the Op, and will be crucial in deciding
-    // whether or not we should continue the traversal of the children of this location.
-    if (lightsVisibilityAttr.isValid())
+    if (camerasVisibilityHideAttr.isValid())
     {
         FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
-            interface, lightsVisibilityAttr);
+            interface, camerasVisibilityHideAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            if (inputLocationType == "camera")
+            {
+                interface.setAttr("visible", FnAttribute::IntAttribute(0));
+                visible = false;
+            }
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+
+    // If the user requested for the currently evaluated location, which has to be either of type "light" or "rig",
+    // to be considered as either visible or hidden by Katana, and thus the renderer, we set the main Katana visibility
+    // attribute to the appropriate value.
+    // We also evaluate that if the potential children of the currently evaluated location have at least
+    // a chance to be visible too. This information will be used later in the Op, and will be crucial in deciding
+    // whether or not we should continue the traversal of the children of this location.
+    if (lightsVisibilityShowAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, lightsVisibilityShowAttr);
 
         if (matchesCELInfo.matches)
         {
@@ -191,21 +232,19 @@ void PassVisibility::setPassVisibility(Foundry::Katana::GeolibCookInterface& int
             canMatchChildren = true;
         }
     }
-
-    // If the user requested for the currently evaluated location, which can technically be of any types, to be
-    // considered as not visible by Katana, and thus the renderer, we set the main Katana visibility attribute to 0.
-    // We also consider that if currently evaluated location is visible, its potential children have at least
-    // a chance to be visible too. This information will be used later in the Op, and will be crucial in deciding
-    // whether or not we should stop the traversal of the children of this location.
-    if (hideVisibilityAttr.isValid())
+    if (lightsVisibilityHideAttr.isValid())
     {
         FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
-            interface, hideVisibilityAttr);
+            interface, lightsVisibilityHideAttr);
 
         if (matchesCELInfo.matches)
         {
-            interface.setAttr("visible", FnAttribute::IntAttribute(0));
-            visible = false;
+            if (inputLocationType == "light" ||
+                inputLocationType == "rig")
+            {
+                interface.setAttr("visible", FnAttribute::IntAttribute(0));
+                visible = false;
+            }
         }
         if (matchesCELInfo.canMatchChildren)
         {
@@ -213,7 +252,7 @@ void PassVisibility::setPassVisibility(Foundry::Katana::GeolibCookInterface& int
         }
     }
 
-    // If the user requested it, in case the  currently evaluated location and its parent
+    // If the user requested it, in case the currently evaluated location and its parent
     // are considered not visible, as well as we can be sure that we don't have anymore potentially matching
     // children locations to evaluate, i.e. no more potentially visible locations, we both prune the currently
     // evaluated location and stop the traversal of the children of the location.
@@ -284,5 +323,5 @@ const std::string PassVisibility::getEnvVar(const std::string& envVarName,
 {
     const char* envVarValue = getenv(envVarName.c_str());
 
-    return (envVarValue != NULL) ? std::string(envVarValue) : defaultValue;
+    return (envVarValue != nullptr) ? std::string(envVarValue) : defaultValue;
 }

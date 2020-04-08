@@ -1,6 +1,7 @@
 # Folders
 
 *build/*
+*rez/build/*
 .vscode/*
 
 # Files

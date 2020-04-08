@@ -19,6 +19,15 @@ class PassCollections : public Foundry::Katana::GeolibOp
 	private:
 		static void setPassCollections(Foundry::Katana::GeolibCookInterface& interface,
     		const std::string& activePassLocation);
+		static void setDlPassCollections(Foundry::Katana::GeolibCookInterface& interface,
+    		const std::string& activePassLocation,
+            const std::vector<std::string>& passLocationSplitVec);
+		static void setPRManPassCollections(Foundry::Katana::GeolibCookInterface& interface,
+    		const std::string& activePassLocation,
+            const std::vector<std::string>& passLocationSplitVec);
+		static void setArnoldPassCollections(Foundry::Katana::GeolibCookInterface& interface,
+    		const std::string& activePassLocation,
+			const std::vector<std::string>& passLocationSplitVec);
 		static bool isCurrentRenderer(Foundry::Katana::GeolibCookInterface& interface,
 			const std::string& rendererToTest);
 		static const std::string getEnvVar(const std::string& envVarName,

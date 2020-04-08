@@ -9,9 +9,9 @@ void PassRays::setup(Foundry::Katana::GeolibSetupInterface& interface)
 void PassRays::cook(Foundry::Katana::GeolibCookInterface& interface)
 {
     // Check if we are using one of the supported renderers.
-    if (!isCurrentRenderer(interface, "prman") &&
-        !isCurrentRenderer(interface, "arnold") &&
-        !isCurrentRenderer(interface, "dl"))
+    if (!isCurrentRenderer(interface, "dl") &&
+        !isCurrentRenderer(interface, "prman") &&
+        !isCurrentRenderer(interface, "arnold"))
     {
         return;
     }
@@ -78,6 +78,7 @@ void PassRays::cook(Foundry::Katana::GeolibCookInterface& interface)
     setPassRays(interface, activePassLocationValue);
 }
 
+///
 void PassRays::setPassRays(Foundry::Katana::GeolibCookInterface& interface,
     const std::string& activePassLocation)
 {
@@ -105,12 +106,12 @@ void PassRays::setPassRays(Foundry::Katana::GeolibCookInterface& interface,
         {
             interface.setAttr("passResolve.rays.camera", FnAttribute::IntAttribute(1));
 
-            if (isCurrentRenderer(interface, "prman"))
+            if (isCurrentRenderer(interface, "dl"))
+                interface.setAttr("dlObjectSettings.visibility.camera", FnAttribute::IntAttribute(1));
+            else if (isCurrentRenderer(interface, "prman"))
                 interface.setAttr("prmanStatements.attributes.visibility.camera", FnAttribute::IntAttribute(1));
             else if (isCurrentRenderer(interface, "arnold"))
                 interface.setAttr("arnoldStatements.visibility.AI_RAY_CAMERA", FnAttribute::IntAttribute(1));
-            else if (isCurrentRenderer(interface, "dl"))
-                interface.setAttr("dlObjectSettings.visibility.camera", FnAttribute::IntAttribute(1));
         }
         if (matchesCELInfo.canMatchChildren)
         {
@@ -126,12 +127,12 @@ void PassRays::setPassRays(Foundry::Katana::GeolibCookInterface& interface,
         {
             interface.setAttr("passResolve.rays.camera", FnAttribute::IntAttribute(0));
 
-            if (isCurrentRenderer(interface, "prman"))
+            if (isCurrentRenderer(interface, "dl"))
+                interface.setAttr("dlObjectSettings.visibility.camera", FnAttribute::IntAttribute(0));
+            else if (isCurrentRenderer(interface, "prman"))
                 interface.setAttr("prmanStatements.attributes.visibility.camera", FnAttribute::IntAttribute(0));
             else if (isCurrentRenderer(interface, "arnold"))
                 interface.setAttr("arnoldStatements.visibility.AI_RAY_CAMERA", FnAttribute::IntAttribute(0));
-            else if (isCurrentRenderer(interface, "dl"))
-                interface.setAttr("dlObjectSettings.visibility.camera", FnAttribute::IntAttribute(0));
         }
         if (matchesCELInfo.canMatchChildren)
         {
@@ -148,14 +149,13 @@ void PassRays::setPassRays(Foundry::Katana::GeolibCookInterface& interface,
         if (matchesCELInfo.matches)
         {
             interface.setAttr("passResolve.rays.matte", FnAttribute::IntAttribute(1));
-            interface.setAttr("prmanStatements.attributes.Matte", FnAttribute::IntAttribute(1));
 
-            if (isCurrentRenderer(interface, "prman"))
+            if (isCurrentRenderer(interface, "dl"))
+                interface.setAttr("dlObjectSettings.visibility.compositingMode", FnAttribute::IntAttribute(1));
+            else if (isCurrentRenderer(interface, "prman"))
                 interface.setAttr("prmanStatements.attributes.Matte", FnAttribute::IntAttribute(1));
             else if (isCurrentRenderer(interface, "arnold"))
                 interface.setAttr("arnoldStatements.matte", FnAttribute::IntAttribute(1));
-            else if (isCurrentRenderer(interface, "dl"))
-                interface.setAttr("dlObjectSettings.visibility.compositingMode", FnAttribute::IntAttribute(1));
         }
         if (matchesCELInfo.canMatchChildren)
         {
@@ -171,12 +171,12 @@ void PassRays::setPassRays(Foundry::Katana::GeolibCookInterface& interface,
         {
             interface.setAttr("passResolve.rays.matte", FnAttribute::IntAttribute(0));
 
-            if (isCurrentRenderer(interface, "prman"))
+            if (isCurrentRenderer(interface, "dl"))
+                interface.setAttr("dlObjectSettings.visibility.compositingMode", FnAttribute::IntAttribute(0));
+            else if (isCurrentRenderer(interface, "prman"))
                 interface.setAttr("prmanStatements.attributes.Matte", FnAttribute::IntAttribute(0));
             else if (isCurrentRenderer(interface, "arnold"))
                 interface.setAttr("arnoldStatements.matte", FnAttribute::IntAttribute(0));
-            else if (isCurrentRenderer(interface, "dl"))
-                interface.setAttr("dlObjectSettings.visibility.compositingMode", FnAttribute::IntAttribute(0));
         }
         if (matchesCELInfo.canMatchChildren)
         {
@@ -184,12 +184,14 @@ void PassRays::setPassRays(Foundry::Katana::GeolibCookInterface& interface,
         }
     }
 
-    if (isCurrentRenderer(interface, "prman"))
-        setPassPRManRays(interface, activePassLocation, canMatchChildren);
+    // We set the renderer-specific rays attributes depending which one
+    // the user is using.
+    if (isCurrentRenderer(interface, "dl"))
+        setDlPassRays(interface, activePassLocation, canMatchChildren);
+    else if (isCurrentRenderer(interface, "prman"))
+        setPRManPassRays(interface, activePassLocation, canMatchChildren);
     else if (isCurrentRenderer(interface, "arnold"))
-        setPassArnoldRays(interface, activePassLocation, canMatchChildren);
-    else if (isCurrentRenderer(interface, "dl"))
-        setPassDlRays(interface, activePassLocation, canMatchChildren);
+        setArnoldPassRays(interface, activePassLocation, canMatchChildren);
 
     // In case there is no more potential location to match down the line,
     // we stop the traversal of the SceneGraph here.
@@ -201,11 +203,205 @@ void PassRays::setPassRays(Foundry::Katana::GeolibCookInterface& interface,
     }
 }
 
-void PassRays::setPassPRManRays(Foundry::Katana::GeolibCookInterface& interface,
+///
+void PassRays::setDlPassRays(Foundry::Katana::GeolibCookInterface& interface,
     const std::string& activePassLocation,
     bool& canMatchChildren)
 {
+    const FnAttribute::StringAttribute dlShadowRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.rays.dl.shadow.show", activePassLocation);
+    const FnAttribute::StringAttribute dlShadowRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.rays.dl.shadow.hide", activePassLocation);
+    const FnAttribute::StringAttribute dlDiffuseRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.rays.dl.diffuse.show", activePassLocation);
+    const FnAttribute::StringAttribute dlDiffuseRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.rays.dl.diffuse.hide", activePassLocation);
+    const FnAttribute::StringAttribute dlSpecularRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.rays.dl.specular.show", activePassLocation);
+    const FnAttribute::StringAttribute dlSpecularRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.rays.dl.specular.hide", activePassLocation);
+    const FnAttribute::StringAttribute dlReflectionRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.rays.dl.reflection.show", activePassLocation);
+    const FnAttribute::StringAttribute dlReflectionRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.rays.dl.reflection.hide", activePassLocation);
+    const FnAttribute::StringAttribute dlTransmissionRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.rays.dl.transmission.show", activePassLocation);
+    const FnAttribute::StringAttribute dlTransmissionRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
+        "passDefine.rays.dl.transmission.hide", activePassLocation);
 
+    FnGeolibServices::FnGeolibCookInterfaceUtils::MatchesCELInfo matchesCELInfo;
+
+    // We make the currently evaluated location visible to the shadow rays.
+    if (dlShadowRaysShowAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, dlShadowRaysShowAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("passResolve.rays.dl.shadow", FnAttribute::IntAttribute(1));
+            interface.setAttr("dlObjectSettings.visibility.shadow", FnAttribute::IntAttribute(1));
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+    // We make the currently evaluated location invisible to the shadow rays.
+    if (dlShadowRaysHideAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, dlShadowRaysHideAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("passResolve.rays.dl.shadow", FnAttribute::IntAttribute(0));
+            interface.setAttr("dlObjectSettings.visibility.shadow", FnAttribute::IntAttribute(0));
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+
+    // We make the currently evaluated location visible to the diffuse rays.
+    if (dlDiffuseRaysShowAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, dlDiffuseRaysShowAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("passResolve.rays.dl.diffuse", FnAttribute::IntAttribute(1));
+            interface.setAttr("dlObjectSettings.visibility.diffuse", FnAttribute::IntAttribute(1));
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+    // We make the currently evaluated location invisible to the diffuse rays.
+    if (dlDiffuseRaysHideAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, dlDiffuseRaysHideAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("passResolve.rays.dl.diffuse", FnAttribute::IntAttribute(0));
+            interface.setAttr("dlObjectSettings.visibility.diffuse", FnAttribute::IntAttribute(0));
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+
+    // We make the currently evaluated location visible to the specular rays.
+    if (dlSpecularRaysShowAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, dlSpecularRaysShowAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("passResolve.rays.dl.specular", FnAttribute::IntAttribute(1));
+            interface.setAttr("dlObjectSettings.visibility.specular", FnAttribute::IntAttribute(1));
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+    // We make the currently evaluated location invisible to the specular rays.
+    if (dlSpecularRaysHideAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, dlSpecularRaysHideAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("passResolve.rays.dl.specular", FnAttribute::IntAttribute(0));
+            interface.setAttr("dlObjectSettings.visibility.specular", FnAttribute::IntAttribute(0));
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+
+    // We make the currently evaluated location visible to the reflection rays.
+    if (dlReflectionRaysShowAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, dlReflectionRaysShowAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("passResolve.rays.dl.reflection", FnAttribute::IntAttribute(1));
+            interface.setAttr("dlObjectSettings.visibility.reflection", FnAttribute::IntAttribute(1));
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+    // We make the currently evaluated location invisible to the reflection rays.
+    if (dlReflectionRaysHideAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, dlReflectionRaysHideAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("passResolve.rays.dl.reflection", FnAttribute::IntAttribute(0));
+            interface.setAttr("dlObjectSettings.visibility.reflection", FnAttribute::IntAttribute(0));
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+
+    // We make the currently evaluated location visible to the transmission rays.
+    if (dlTransmissionRaysShowAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, dlTransmissionRaysShowAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("passResolve.rays.dl.transmission", FnAttribute::IntAttribute(1));
+            interface.setAttr("dlObjectSettings.visibility.transmission", FnAttribute::IntAttribute(1));
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+    // We make the currently evaluated location invisible to the transmission rays.
+    if (dlTransmissionRaysHideAttr.isValid())
+    {
+        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
+            interface, dlTransmissionRaysHideAttr);
+
+        if (matchesCELInfo.matches)
+        {
+            interface.setAttr("passResolve.rays.dl.transmission", FnAttribute::IntAttribute(0));
+            interface.setAttr("dlObjectSettings.visibility.transmission", FnAttribute::IntAttribute(0));
+        }
+        if (matchesCELInfo.canMatchChildren)
+        {
+            canMatchChildren = true;
+        }
+    }
+}
+
+///
+void PassRays::setPRManPassRays(Foundry::Katana::GeolibCookInterface& interface,
+    const std::string& activePassLocation,
+    bool& canMatchChildren)
+{
     const FnAttribute::StringAttribute prmanIndirectRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
         "passDefine.rays.prman.indirect.show", activePassLocation);
     const FnAttribute::StringAttribute prmanIndirectRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
@@ -214,6 +410,8 @@ void PassRays::setPassPRManRays(Foundry::Katana::GeolibCookInterface& interface,
         "passDefine.rays.prman.transmission.show", activePassLocation);
     const FnAttribute::StringAttribute prmanTransmissionRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
         "passDefine.rays.prman.transmission.hide", activePassLocation);
+
+    FnGeolibServices::FnGeolibCookInterfaceUtils::MatchesCELInfo matchesCELInfo;
 
     // We make the currently evaluated location visible to the indirect rays.
     if (prmanIndirectRaysShowAttr.isValid())
@@ -282,70 +480,11 @@ void PassRays::setPassPRManRays(Foundry::Katana::GeolibCookInterface& interface,
     }
 }
 
-void PassRays::setPassArnoldRays(Foundry::Katana::GeolibCookInterface& interface,
+///
+void PassRays::setArnoldPassRays(Foundry::Katana::GeolibCookInterface& interface,
     const std::string& activePassLocation,
     bool& canMatchChildren)
 {
-
-}
-
-void PassRays::setPassDlRays(Foundry::Katana::GeolibCookInterface& interface,
-    const std::string& activePassLocation,
-    bool& canMatchChildren)
-{
-    const FnAttribute::StringAttribute dlShadowRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.rays.dl.shadow.show", activePassLocation);
-    const FnAttribute::StringAttribute dlShadowRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.rays.dl.shadow.hide", activePassLocation);
-    const FnAttribute::StringAttribute dlDiffuseRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.rays.dl.diffuse.show", activePassLocation);
-    const FnAttribute::StringAttribute dlDiffuseRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.rays.dl.diffuse.hide", activePassLocation);
-    const FnAttribute::StringAttribute dlSpecularRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.rays.dl.specular.show", activePassLocation);
-    const FnAttribute::StringAttribute dlSpecularRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.rays.dl.specular.hide", activePassLocation);
-    const FnAttribute::StringAttribute dlReflectionRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.rays.dl.reflection.show", activePassLocation);
-    const FnAttribute::StringAttribute dlReflectionRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.rays.dl.reflection.hide", activePassLocation);
-    const FnAttribute::StringAttribute dlTransmissionRaysShowAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.rays.dl.transmission.show", activePassLocation);
-    const FnAttribute::StringAttribute dlTransmissionRaysHideAttr = Foundry::Katana::GetGlobalAttr(interface,
-        "passDefine.rays.dl.transmission.hide", activePassLocation);
-
-    // We make the currently evaluated location visible to the shadow rays.
-    if (dlShadowRaysShowAttr.isValid())
-    {
-        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
-            interface, dlShadowRaysShowAttr);
-
-        if (matchesCELInfo.matches)
-        {
-            interface.setAttr("passResolve.rays.dl.shadow", FnAttribute::IntAttribute(1));
-            interface.setAttr("dlObjectSettings.visibility.shadow", FnAttribute::IntAttribute(1));
-        }
-        if (matchesCELInfo.canMatchChildren)
-        {
-            canMatchChildren = true;
-        }
-    }
-    // We make the currently evaluated location invisible to the shadow rays.
-    if (dlShadowRaysHideAttr.isValid())
-    {
-        FnGeolibServices::FnGeolibCookInterfaceUtils::matchesCEL(matchesCELInfo,
-            interface, dlShadowRaysHideAttr);
-
-        if (matchesCELInfo.matches)
-        {
-            interface.setAttr("passResolve.rays.dl.shadow", FnAttribute::IntAttribute(0));
-            interface.setAttr("dlObjectSettings.visibility.shadow", FnAttribute::IntAttribute(0));
-        }
-        if (matchesCELInfo.canMatchChildren)
-        {
-            canMatchChildren = true;
-        }
-    }
 
 }
 
@@ -378,5 +517,5 @@ const std::string PassRays::getEnvVar(const std::string& envVarName,
 {
     const char* envVarValue = getenv(envVarName.c_str());
 
-    return (envVarValue != NULL) ? std::string(envVarValue) : defaultValue;
+    return (envVarValue != nullptr) ? std::string(envVarValue) : defaultValue;
 }

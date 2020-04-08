@@ -5,7 +5,7 @@
                 Enable the pass, which means it can be used by the "PassResolve" node to setup the SceneGraph accordingly.
             </help>
         </int>
-        <string name="renderer" label="Renderer" default="prman" constant="1" widget="mapper" options="PRMan:prman|Arnold:arnold|3Delight:dl">
+        <string name="renderer" label="Renderer" default="dl" constant="1" widget="mapper" options="3Delight:dl|PRMan:prman">
             <help>
                 Setup the available pass parameters, especially those related to rays, to those of the (supported) selected renderer.
             </help>
@@ -33,37 +33,51 @@
             </string>
         </group>
         <group name="visibility" label="Visibility" open="False">
-            <group name="show" label="Show" open="False">
-                <string name="global" label="Global" default="" widget="cel" constant="1">
+            <group name="global" label="Global" open="False">
+                <string name="show" label="Show" default="" widget="cel" constant="1">
                     <help>
                         Flag these locations as visible in the SceneGraph and to the renderer.
                     </help>
                 </string>
-                <string name="cameras" label="Cameras" default="" widget="cel" constant="1">
+                <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                    <help>
+                        Flag these locations as hidden in the SceneGraph and to the renderer.
+                    </help>
+                </string>
+            </group>
+            <group name="cameras" label="Cameras" open="False">
+                <string name="show" label="Show" default="" widget="cel" constant="1">
                     <help>
                        Flag these locations as visible in the SceneGraph and to the renderer if they are of type "camera".
                     </help>
                 </string>
-                <string name="lights" label="Lights" default="" widget="cel" constant="1">
+                <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                    <help>
+                       Flag these locations as hidden in the SceneGraph and to the renderer if they are of type "camera".
+                    </help>
+                </string>
+            </group>
+            <group name="lights" label="Lights" open="False">
+                <string name="show" label="Show" default="" widget="cel" constant="1">
                     <help>
                         Flag these locations as visible in the SceneGraph and to the renderer if they are of type "light" or "rig".
                     </help>
                 </string>
+                <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                    <help>
+                        Flag these locations as hidden in the SceneGraph and to the renderer if they are of type "light" or "rig".
+                    </help>
+                </string>
             </group>
-            <string name="hide" label="Hide" default="" widget="cel" constant="1">
-                <help>
-                    Flag these locations as hidden in the SceneGraph and to the renderer.
-                </help>
-            </string>
             <group name="advanced" label="Advanced" open="False">
                 <int name="autoHide" label="Automatic Hiding" default="1" widget="checkBox" constant="1">
                     <help>
-                        Flag all the direct children of "/root/world" as hidden if they are not explicitely flagged as visible or hidden.
+                        Flag all the direct children of "/root/world" as hidden if they are not explicitely flagged as visible or hidden already.
                     </help>
                 </int>
                 <int name="autoPrune" label="Automatic Pruning" default="0" widget="checkBox" constant="1">
                     <help>
-                        Prune all the location that are not explicitely flagged as visible or hidden. This corresponds to locations that will both never match anything even down the line of a recursive CEL statement for example.
+                        Prune all the location that are not explicitely flagged as visible or hidden. This corresponds to locations that are set as hidden as well their parents, and that will never match anything even down the line of a recursive CEL statement.
                     </help>
                 </int>
             </group>
@@ -92,6 +106,73 @@
                         Will hide these locations(s) as mattes in the pass.
                     </help>
                 </string>
+            </group>
+            <group name="dl" label="3Delight" open="False" hideTitle="True">
+                <hintdict name="conditionalVisOps">
+                    <string value="../../renderer" name="conditionalVisPath"/>
+                    <string value="equalTo" name="conditionalVisOp"/>
+                    <string value="dl" name="conditionalVisValue"/>
+                </hintdict>
+                <group name="shadow" label="Shadow" open="False">
+                    <string name="show" label="Show" default="" widget="cel" constant="1">
+                        <help>
+                            Will make these locations(s) to cast shadows in the pass.
+                        </help>
+                    </string>
+                    <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                        <help>
+                            Will make these locations(s) to not cast shadows in the pass.
+                        </help>
+                    </string>
+                </group>
+                <group name="diffuse" label="Diffuse" open="False">
+                    <string name="show" label="Show" default="" widget="cel" constant="1">
+                        <help>
+                            Will expose these locations(s) to the diffuse rays in the pass.
+                        </help>
+                    </string>
+                    <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                        <help>
+                            Will hide these locations(s) to the diffuse rays in the pass.
+                        </help>
+                    </string>
+                </group>
+                <group name="specular" label="Specular" open="False">
+                    <string name="show" label="Show" default="" widget="cel" constant="1">
+                        <help>
+                            Will expose these locations(s) to the specular rays in the pass.
+                        </help>
+                    </string>
+                    <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                        <help>
+                            Will hide these locations(s) to the specular rays in the pass.
+                        </help>
+                    </string>
+                </group>
+                <group name="reflection" label="Reflection" open="False">
+                    <string name="show" label="Show" default="" widget="cel" constant="1">
+                        <help>
+                            Will expose these locations(s) to the reflection rays in the pass.
+                        </help>
+                    </string>
+                    <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                        <help>
+                            Will hide these locations(s) to the reflection rays in the pass.
+                        </help>
+                    </string>
+                </group>
+                <group name="transmission" label="Transmission" open="False">
+                    <string name="show" label="Show" default="" widget="cel" constant="1">
+                        <help>
+                            Will expose these locations(s) to the transmission rays in the pass.
+                        </help>
+                    </string>
+                    <string name="hide" label="Hide" default="" widget="cel" constant="1">
+                        <help>
+                            Will hide these locations(s) to the transmission rays in the pass.
+                        </help>
+                    </string>
+                </group>
             </group>
             <group name="prman" label="PRMan" open="False" hideTitle="True">
                 <hintdict name="conditionalVisOps">
@@ -124,7 +205,7 @@
                     </string>
                 </group>
             </group>
-            <group name="arnold" label="Arnold" open="False" hideTitle="True">
+            <!-- <group name="arnold" label="Arnold" open="False" hideTitle="True">
                 <hintdict name="conditionalVisOps">
                     <string value="../../renderer" name="conditionalVisPath"/>
                     <string value="equalTo" name="conditionalVisOp"/>
@@ -206,74 +287,7 @@
                         </help>
                     </string>
                 </group>
-            </group>
-            <group name="dl" label="3Delight" open="False" hideTitle="True">
-                <hintdict name="conditionalVisOps">
-                    <string value="../../renderer" name="conditionalVisPath"/>
-                    <string value="equalTo" name="conditionalVisOp"/>
-                    <string value="dl" name="conditionalVisValue"/>
-                </hintdict>
-                <group name="shadow" label="Shadow" open="False">
-                    <string name="show" label="Show" default="" widget="cel" constant="1">
-                        <help>
-                            TODO.
-                        </help>
-                    </string>
-                    <string name="hide" label="Hide" default="" widget="cel" constant="1">
-                        <help>
-                            TODO.
-                        </help>
-                    </string>
-                </group>
-                <group name="diffuse" label="Diffuse" open="False">
-                    <string name="show" label="Show" default="" widget="cel" constant="1">
-                        <help>
-                            TODO.
-                        </help>
-                    </string>
-                    <string name="hide" label="Hide" default="" widget="cel" constant="1">
-                        <help>
-                            TODO.
-                        </help>
-                    </string>
-                </group>
-                <group name="specular" label="Specular" open="False">
-                    <string name="show" label="Show" default="" widget="cel" constant="1">
-                        <help>
-                            TODO.
-                        </help>
-                    </string>
-                    <string name="hide" label="Hide" default="" widget="cel" constant="1">
-                        <help>
-                            TODO.
-                        </help>
-                    </string>
-                </group>
-                <group name="reflection" label="Reflection" open="False">
-                    <string name="show" label="Show" default="" widget="cel" constant="1">
-                        <help>
-                            TODO.
-                        </help>
-                    </string>
-                    <string name="hide" label="Hide" default="" widget="cel" constant="1">
-                        <help>
-                            TODO.
-                        </help>
-                    </string>
-                </group>
-                <group name="transmission" label="Transmission" open="False">
-                    <string name="show" label="Show" default="" widget="cel" constant="1">
-                        <help>
-                            TODO.
-                        </help>
-                    </string>
-                    <string name="hide" label="Hide" default="" widget="cel" constant="1">
-                        <help>
-                            TODO.
-                        </help>
-                    </string>
-                </group>
-            </group>
+            </group> -->
         </group>
     </group>
 </args>

@@ -4,7 +4,7 @@
 set -e
 
 BUILD_PATH=$1
-KATANA_OPS_VERSION=${REZ_BUILD_PROJECT_VERSION}
+KATANA_ADDONS_VERSION=${REZ_BUILD_PROJECT_VERSION}
 
 # We print the arguments passed to the Bash script.
 echo -e "\n"
@@ -14,11 +14,11 @@ echo -e "============="
 echo -e "\n"
 
 echo -e "[BUILD][ARGS] BUILD PATH: ${BUILD_PATH}"
-echo -e "[BUILD][ARGS] KATANA-OPS VERSION: ${KATANA_OPS_VERSION}"
+echo -e "[BUILD][ARGS] KATANA-ADDONS VERSION: ${KATANA_ADDONS_VERSION}"
 
 # We check if the arguments variables we need are correctly set.
 # If not, we abort the process.
-if [[ -z ${BUILD_PATH} || -z ${KATANA_OPS_VERSION} ]]; then
+if [[ -z ${BUILD_PATH} || -z ${KATANA_ADDONS_VERSION} ]]; then
     echo -e "\n"
     echo -e "[BUILD][ARGS] One or more of the argument variables are empty. Aborting..."
     echo -e "\n"
@@ -26,9 +26,9 @@ if [[ -z ${BUILD_PATH} || -z ${KATANA_OPS_VERSION} ]]; then
     exit 1
 fi
 
-# We build katana-ops.
+# We build katana-addons.
 echo -e "\n"
-echo -e "[BUILD] Building katana-ops-${KATANA_OPS_VERSION}..."
+echo -e "[BUILD] Building katana-addons-${KATANA_ADDONS_VERSION}..."
 echo -e "\n"
 
 cd ${BUILD_PATH}
@@ -37,5 +37,5 @@ make \
     -j${REZ_BUILD_THREAD_COUNT}
 
 echo -e "\n"
-echo -e "[BUILD] Finished building katana-ops-${KATANA_OPS_VERSION}!"
+echo -e "[BUILD] Finished building katana-addons-${KATANA_ADDONS_VERSION}!"
 echo -e "\n"

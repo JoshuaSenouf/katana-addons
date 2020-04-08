@@ -58,6 +58,8 @@ class PassDefineEditor(QtWidgets.QWidget):
         ]
 
     def create_ui_from_generic_assign(self, generic_assign_name, node_reference_name):
+        """
+        """
         logger.debug("PassDefineEditor - create_ui_from_generic_assign()")
 
         generic_assign_node = SA.get_reference_node(self.__node, node_reference_name)
@@ -73,6 +75,10 @@ class PassDefineEditor(QtWidgets.QWidget):
         self.layout().addWidget(widget)
 
     def create_ui_group_from_generic_assign(self, generic_assign_name, node_reference_name, group_name):
+        """
+        """
+        logger.debug("PassDefineEditor - create_ui_group_from_generic_assign()")
+
         generic_assign_node = SA.get_reference_node(self.__node, node_reference_name)
 
         group_parameter = generic_assign_node.getParameter("args.{generic_assign_name}.{group_name}".format(
@@ -137,4 +143,3 @@ class PassDefineEditor(QtWidgets.QWidget):
             self.__node.clear_pass_data()
             self.__node.update_pass_data(self.pass_define_ga_node)
             self.__node.update_pass_location(self.pass_define_ga_node)
-            # self.__node.reset_node_network()
