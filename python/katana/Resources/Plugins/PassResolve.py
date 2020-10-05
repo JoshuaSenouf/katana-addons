@@ -8,15 +8,18 @@ from Katana import (
 )
 
 
-logger = logging.getLogger("PassResolve.Node")
-logger.setLevel(logging.WARNING)
+module_logger = logging.getLogger("katana_addons.Plugins.PassResolve.Node")
+module_logger.setLevel(logging.WARNING)
 
 
 class PassResolve(Nodes3DAPI.NodeTypeBuilder):
+    """
+    """
+
     def __init__(self, node_name):
         """
         """
-        logger.debug("PassResolve - __init__()")
+        module_logger.debug("PassResolve - __init__()")
 
         super(PassResolve, self).__init__(node_name)
 
@@ -34,7 +37,7 @@ class PassResolve(Nodes3DAPI.NodeTypeBuilder):
     def build_node_parameters(self):
         """
         """
-        logger.debug("PassResolve - build_node_parameters()")
+        module_logger.debug("PassResolve - build_node_parameters()")
 
         group_builder = FnAttribute.GroupBuilder()
         # group_builder.set("node_version", 1)
@@ -51,7 +54,7 @@ class PassResolve(Nodes3DAPI.NodeTypeBuilder):
     def get_parameters_hints(self):
         """
         """
-        logger.debug("PassResolve - get_parameters_hints()")
+        module_logger.debug("PassResolve - get_parameters_hints()")
 
         # We describe here our Katana parameters and how they should appear/behave
         return {
@@ -75,7 +78,7 @@ class PassResolve(Nodes3DAPI.NodeTypeBuilder):
 def build_pass_resolve_op_chain(node, interface):
     """
     """
-    logger.debug("PassResolve - build_pass_resolve_op_chain()")
+    module_logger.debug("PassResolve - build_pass_resolve_op_chain()")
 
     interface.setMinRequiredInputs(0)
 
@@ -128,7 +131,7 @@ def build_pass_resolve_op_chain(node, interface):
 def get_existing_render_node(node):
     """
     """
-    logger.debug("PassResolve - get_existing_render_node()")
+    module_logger.debug("PassResolve - get_existing_render_node()")
 
     connected_ports = node.getOutputPortByIndex(0).getConnectedPorts()
 
@@ -141,7 +144,7 @@ def get_existing_render_node(node):
 def setup_render_node(node):
     """
     """
-    logger.debug("PassResolve - setup_render_node()")
+    module_logger.debug("PassResolve - setup_render_node()")
 
     render_node = node.get_existing_render_node()
 
